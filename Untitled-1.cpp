@@ -26,29 +26,96 @@ bool isYes(string str)
 		return false;
 	}
 }
+
 int main()
 {
-	string tmp;
-	POINT z, l1, l2;
+	string str;
+	char cmd;
+	POINT org_point, ref_point_1, ref_point_2;
+	int loop_count = 0;
 
-	cout << curTime() << "设置原点（y 完成 / n 退出）" << endl;
-	cin >> tmp;
-	if (isYes(tmp))
+	while (true)
 	{
-		/* code */
-		if (GetCursorPos(&z))
+		cout << curTime() << "设置原点（Enter 继续）" << ends;
+		while (true)
 		{
-			cout << curTime() << "原点位置 x=" << z.x << " y=" << z.y << endl;
+			cmd = cin.get();
+			if (cmd == '\n')
+			{
+				if (GetCursorPos(&org_point))
+				{
+					cout << curTime() << "原点位置 x=" << org_point.x << " y=" << org_point.y << endl;
+					break;
+				}
+				else
+				{
+					cout << curTime() << "GetCursorPos() error" << endl;
+					exit(-1);
+				}
+			}
 		}
-		else
+		//set ref point 1
+		loop_count = 0;
+		cout << curTime() << "设置参考点1（Enter 继续）" << ends;
+		while (true)
 		{
-			cout << curTime() << "GetCursorPos error" << endl;
-			exit(-1);
+			cmd = cin.get();
+			if (cmd == '\n')
+			{
+				if (GetCursorPos(&ref_point_1))
+				{
+					cout << curTime() << "参考点1位置 x=" << ref_point_1.x << " y=" << ref_point_1.y << endl;
+					break;
+				}
+				else
+				{
+					cout << curTime() << "GetCursorPos() error" << endl;
+					exit(-1);
+				}
+			}
+			else if (loop_count == 0 && (cmd == 'b' || cmd == 'B'))
+			{
+				break;
+			}
+			loop_count++;
 		}
-	}
-	else
-	{
-		return 0;
+		if (cmd == 'b' || cmd == 'B')
+		{
+			cin.clear();
+			cin.ignore(INT8_MAX, '\n');
+			continue;
+		}
+		//set ref point 2
+		loop_count = 0;
+		cout << curTime() << "设置参考点2（Enter 继续）" << ends;
+		while (true)
+		{
+			cmd = cin.get();
+			if (cmd == '\n')
+			{
+				if (GetCursorPos(&ref_point_2))
+				{
+					cout << curTime() << "参考点2位置 x=" << ref_point_2.x << " y=" << ref_point_2.y << endl;
+					break;
+				}
+				else
+				{
+					cout << curTime() << "GetCursorPos() error" << endl;
+					exit(-1);
+				}
+			}
+			else if (loop_count == 0 && (cmd == 'b' || cmd == 'B'))
+			{
+				break;
+			}
+			loop_count++;
+		}
+		if (cmd == 'b' || cmd == 'B')
+		{
+			cin.clear();
+			cin.ignore(INT8_MAX, '\n');
+			continue;
+		}
 	}
 	system("pause");
 

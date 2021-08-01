@@ -1,7 +1,7 @@
 /*
  * @Author: 长鱼
  * @Date: 2021-07-28 22:30:18
- * @LastEditTime: 2021-07-31 13:40:06
+ * @LastEditTime: 2021-08-02 00:39:11
  * @FilePath: \drawOnmyoji\Untitled-1.cpp
  */
 
@@ -45,12 +45,12 @@ int main()
 	srand((unsigned int)time(0));
 	char cmd;
 	POINT screen_org_point, screen_ref_point_1, screen_ref_point_2, draw_org_point;
-	int distance = 0;			  //移动步长（像素）
+	int distance = 0;					//移动步长（像素）
 	const string filename = "locs.txt"; //文件名
-	vector<POINT> points;		  //绘制坐标点
-	int recovery_time = 10;		  //恢复时间（秒）
-	int cold_time = 10;			  //冷却时间（秒）
-	int residue_count = 0;		  //剩余次数
+	vector<POINT> points;				//绘制坐标点
+	int recovery_time = 10;				//恢复时间（秒）
+	int cold_time = 10;					//冷却时间（秒）
+	int residue_count = 0;				//剩余次数
 
 	//select color first
 	cout << curTime() << "颜色选好了嘛？（Enter 继续）" << endl;
@@ -189,7 +189,7 @@ int main()
 			if (gird_count > 0)
 			{
 				distance = abs(screen_ref_point_1.x - screen_ref_point_2.x) / gird_count;
-				cout << curTime() << "间隔距离 " << distance<<" 像素" << endl;
+				cout << curTime() << "间隔距离 " << distance << " 像素" << endl;
 				break;
 			}
 		}
@@ -202,7 +202,7 @@ int main()
 			clearBuf();
 			if (residue_count >= 0)
 			{
-				residue_count = min(residue_count,(int) points.size()); //取较小值避免后续相减负值
+				residue_count = min(residue_count, (int)points.size()); //取较小值避免后续相减负值
 				cout << curTime() << "当前剩余次数 " << residue_count << endl;
 				break;
 			}

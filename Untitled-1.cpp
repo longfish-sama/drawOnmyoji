@@ -16,7 +16,7 @@
 #pragma comment(lib, "kernel32.lib")
 using namespace std;
 
-//清空输入缓冲
+//clear cin buff
 void clearBuf()
 {
 	cin.clear();
@@ -24,7 +24,7 @@ void clearBuf()
 	return;
 }
 
-//string形式返回当前时间
+//return current time
 string curTime()
 {
 	time_t now = time(0);
@@ -38,15 +38,15 @@ string curTime()
 
 int main()
 {
-	char size_cmd[32] = "MODE CON: COLS=49 LINES=12";
-	COORD buff_size_cmd = {49, 600}; //{列，行}
+	const char size_cmd[32] = "MODE CON: COLS=49 LINES=12";
+	const COORD buff_size_cmd = {49, 600}; //{列，行}
 	system(size_cmd);
 	SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), buff_size_cmd);
 	srand((unsigned int)time(0));
 	char cmd;
 	POINT screen_org_point, screen_ref_point_1, screen_ref_point_2, draw_org_point;
 	int distance = 0;			  //移动步长（像素）
-	string filename = "locs.txt"; //文件名
+	const string filename = "locs.txt"; //文件名
 	vector<POINT> points;		  //绘制坐标点
 	int recovery_time = 10;		  //恢复时间（秒）
 	int cold_time = 10;			  //冷却时间（秒）
@@ -79,14 +79,14 @@ int main()
 						temp_point.y = stoi(temp_str.substr(split_loc + 1));
 						points.push_back(temp_point);
 						cout << curTime() << "point " << loop_count << " ["
-							 << points[loop_count].x << " "
+							 << points[loop_count].x << ","
 							 << points[loop_count].y << "]" << endl;
 						loop_count++;
 					}
 				}
 			}
 			file.close();
-			cout << curTime() << "参数已读入（r 重新读取 / Enter 继续）" << endl;
+			cout << curTime() << "参数已读入（Enter 继续 / r 重新读取）" << endl;
 			cmd = cin.get();
 			if (cmd == '\n')
 			{
@@ -100,7 +100,7 @@ int main()
 		}
 		else
 		{
-			cout << curTime() << "can not open file: " << filename << " press any key to retry" << endl;
+			cout << curTime() << "无法打开文件 " << filename << " ，请检查文件名与文件位置" << endl;
 			system("pause");
 		}
 	}
@@ -118,26 +118,26 @@ int main()
 				if (GetCursorPos(&screen_org_point))
 				{
 					cout << curTime() << "屏幕原点 ["
-						 << screen_org_point.x << " "
+						 << screen_org_point.x << ","
 						 << screen_org_point.y << "]" << endl;
 					break;
 				}
 				else
 				{
-					cout << curTime() << "GetCursorPos() error" << endl;
+					cout << curTime() << "GetCursorPos() 错误" << endl;
 					exit(-1);
 				}
 			}
 		}
 
 		//set draw_org_point
-		cout << curTime() << "输入画板原点横坐标（Enter 确定）：" << endl;
+		cout << curTime() << "输入绘图原点横坐标（Enter 确定）：" << endl;
 		cin >> draw_org_point.x;
-		cout << curTime() << "输入画板原点纵坐标（Enter 确定）：" << endl;
+		cout << curTime() << "输入绘图原点纵坐标（Enter 确定）：" << endl;
 		cin >> draw_org_point.y;
 		clearBuf();
-		cout << curTime() << "画板原点 ["
-			 << draw_org_point.x << " " << draw_org_point.y << "]" << endl;
+		cout << curTime() << "绘图原点 ["
+			 << draw_org_point.x << "," << draw_org_point.y << "]" << endl;
 
 		//set screen ref point 1
 		cout << curTime() << "设置屏幕参考点1（Enter 确定）" << ends;
@@ -153,7 +153,7 @@ int main()
 				}
 				else
 				{
-					cout << curTime() << "GetCursorPos() error" << endl;
+					cout << curTime() << "GetCursorPos() 错误" << endl;
 					exit(-1);
 				}
 			}
@@ -173,7 +173,7 @@ int main()
 				}
 				else
 				{
-					cout << curTime() << "GetCursorPos() error" << endl;
+					cout << curTime() << "GetCursorPos() 错误" << endl;
 					exit(-1);
 				}
 			}
@@ -189,7 +189,7 @@ int main()
 			if (gird_count > 0)
 			{
 				distance = abs(screen_ref_point_1.x - screen_ref_point_2.x) / gird_count;
-				cout << curTime() << "间隔距离 " << distance << endl;
+				cout << curTime() << "间隔距离 " << distance<<" 像素" << endl;
 				break;
 			}
 		}
@@ -202,7 +202,7 @@ int main()
 			clearBuf();
 			if (residue_count >= 0)
 			{
-				residue_count = min(residue_count, points.size()); //取较小值避免后续相减负值
+				residue_count = min(residue_count,(int) points.size()); //取较小值避免后续相减负值
 				cout << curTime() << "当前剩余次数 " << residue_count << endl;
 				break;
 			}
@@ -216,7 +216,7 @@ int main()
 			clearBuf();
 			if (recovery_time > 0)
 			{
-				cold_time = ceil((points.size() - residue_count) * recovery_time / (double)points.size());
+				cold_time = (int)ceil(((double)points.size() - (double)residue_count) * (double)recovery_time / (double)points.size());
 				cout << curTime() << "恢复时间 " << recovery_time << " 秒" << endl;
 				cout << curTime() << "冷却时间 " << cold_time << " 秒" << endl;
 				break;
@@ -254,16 +254,18 @@ int main()
 	{
 		cout << curTime() << "冷却 " << cold_time << " 秒" << endl;
 		Sleep(1000 * cold_time + rand() % 3000);
-		cout << curTime() << "绘制位置 " << i + 1
-			 << " [" << points[i].x << " " << points[i].y << "]" << endl;
+		cout << curTime() << "绘图位置 " << i + 1
+			 << " [" << points[i].x << "," << points[i].y << "]" << endl;
 		SetCursorPos(screen_org_point.x + (points[i].x - draw_org_point.x) * distance,
 					 screen_org_point.y + (points[i].y - draw_org_point.y) * distance);
 		Sleep(100 + rand() % 500);
 		mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
+		//mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
 		Sleep(10 + rand() % 100);
 		mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
+		//mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
 	}
-	cout << curTime() << "绘制完成"
+	cout << curTime() << "完成"
 		 << "\a" << endl;
 	/*
 	while (true)

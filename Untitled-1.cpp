@@ -1,7 +1,7 @@
 /*
  * @Author: 长鱼
  * @Date: 2021-07-28 22:30:18
- * @LastEditTime: 2021-08-02 00:39:11
+ * @LastEditTime: 2021-08-02 23:59:55
  * @FilePath: \drawOnmyoji\Untitled-1.cpp
  */
 
@@ -16,14 +16,6 @@
 #pragma comment(lib, "kernel32.lib")
 using namespace std;
 
-//clear cin buff
-void clearBuf()
-{
-	cin.clear();
-	cin.ignore(INT16_MAX, '\n');
-	return;
-}
-
 //return current time
 string curTime()
 {
@@ -36,6 +28,37 @@ string curTime()
 	return timestr + " ";
 }
 
+//write log
+void writeLog(size_t count, vector<string> &logs)
+{
+	ofstream log_file("log.txt");
+	if (count >= 0 && count < logs.size())
+	{
+		logs[count] = "//@" + curTime() + logs[count];
+	}
+	if (log_file.is_open())
+	{
+		for (size_t i = 0; i < logs.size(); i++)
+		{
+			log_file << logs[i] << endl;
+		}
+	}
+	else
+	{
+		cout << "无法打开文件 log.txt ，请检查文件名与文件位置" << endl;
+	}
+	log_file.close();
+	return;
+}
+
+//clear cin buff
+void clearBuf()
+{
+	cin.clear();
+	cin.ignore(INT16_MAX, '\n');
+	return;
+}
+
 int main()
 {
 	const char size_cmd[32] = "MODE CON: COLS=49 LINES=12";
@@ -45,12 +68,12 @@ int main()
 	srand((unsigned int)time(0));
 	char cmd;
 	POINT screen_org_point, screen_ref_point_1, screen_ref_point_2, draw_org_point;
-	int distance = 0;					//移动步长（像素）
-	const string filename = "locs.txt"; //文件名
-	vector<POINT> points;				//绘制坐标点
-	int recovery_time = 10;				//恢复时间（秒）
-	int cold_time = 10;					//冷却时间（秒）
-	int residue_count = 0;				//剩余次数
+	int distance = 0;		//移动步长（像素）
+	vector<POINT> points;	//绘制坐标点
+	int recovery_time = 10; //恢复时间（秒）
+	int cold_time = 10;		//冷却时间（秒）
+	int residue_count = 0;	//剩余次数
+	vector<string> logs;
 
 	//select color first
 	cout << curTime() << "颜色选好了嘛？（Enter 继续）" << endl;
@@ -59,10 +82,12 @@ int main()
 	//read file
 	while (true)
 	{
-		ifstream file(filename);
+		ifstream file("locs.txt");
 		if (file.is_open())
 		{
 			int loop_count = 0;
+			logs.clear();
+			points.clear();
 			while (!file.eof()) //逐行读入
 			{
 				string temp_str;
@@ -75,6 +100,7 @@ int main()
 					split_loc = temp_str.find_first_of(".");
 					if (split_loc < temp_str.length() - 1 && split_loc > 0)
 					{
+						logs.push_back(temp_str);
 						temp_point.x = stoi(temp_str.substr(0, split_loc));
 						temp_point.y = stoi(temp_str.substr(split_loc + 1));
 						points.push_back(temp_point);
@@ -100,7 +126,7 @@ int main()
 		}
 		else
 		{
-			cout << curTime() << "无法打开文件 " << filename << " ，请检查文件名与文件位置" << endl;
+			cout << curTime() << "无法打开文件 locs.txt ，请检查文件名与文件位置" << endl;
 			system("pause");
 		}
 	}
@@ -264,6 +290,7 @@ int main()
 		Sleep(10 + rand() % 100);
 		mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
 		//mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+		writeLog(i, logs);
 	}
 	cout << curTime() << "完成"
 		 << "\a" << endl;

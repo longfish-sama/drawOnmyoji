@@ -1,7 +1,7 @@
 /*
  * @Author: 长鱼
  * @Date: 2021-07-28 22:30:18
- * @LastEditTime: 2021-08-02 23:59:55
+ * @LastEditTime: 2021-08-03 22:20:42
  * @FilePath: \drawOnmyoji\Untitled-1.cpp
  */
 
@@ -265,8 +265,7 @@ int main()
 
 	//show info
 	cout << curTime() << "共 " << points.size() << " 点，预估时间 "
-		 << max(cold_time / 60, 1) //预估时间最小显示1
-		 << " 分钟" << endl;
+		 << cold_time / (float)60 << " 分钟" << endl;
 	cout << curTime() << "开始后只能通过【关闭程序】来终止绘制" << endl;
 	cout << curTime() << "请【保持绘图窗口的当前位置和大小】" << endl;
 	cout << curTime() << "并在5秒延时结束前将绘图窗口【置于顶层】并【保持激活】" << endl;
